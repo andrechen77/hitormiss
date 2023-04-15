@@ -1,7 +1,8 @@
 import { View, Text } from "react-native";
+import RatingView from "./RatingView";
 
 export default function PageSargent() {
 	return (
-		<View><Text>This is the sarge page!</Text></View>
+		<RatingView name="Sargent Hall"/>
 	);
 }
