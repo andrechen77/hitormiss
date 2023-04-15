@@ -11,9 +11,6 @@ const data = [
 	{ x: 5, y: 15 },
 	{ x: 6, y: 10 },
 	{ x: 7, y: 6 },
-	{ x: 8, y: 3 },
-	{ x: 9, y: 1 },
-	{ x: 10, y: 0 },
 ];
 
 export default function RatingView({ name }: { name: string}) {

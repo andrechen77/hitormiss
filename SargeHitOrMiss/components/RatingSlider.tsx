@@ -11,7 +11,7 @@ export default function RatingSlider() {
 				value={rating}
 				onValueChange={newRating => setRating(newRating)} // can ingnore type error here; works fine
 				minimumValue={0}
-				maximumValue={10}
+				maximumValue={7}
 				step={1}
 				renderBelowThumbComponent={SliderTip}
 			/>

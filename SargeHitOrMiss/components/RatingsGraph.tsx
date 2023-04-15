@@ -29,7 +29,7 @@ const tension = 0.3;
 export default function RatingsGraph({ data }: { data: {x: number, y: number }[] }) {
 	return (
 		/* ignore type error about Chart's children; works fine */
-		<Chart style={chartStyle} data={data} xDomain={{ min: 0, max: 10 }} yDomain={{ min: -1, max: 20 }}>
+		<Chart style={chartStyle} data={data} xDomain={{ min: 0, max: 7 }} yDomain={{ min: -1, max: 20 }}>
 			<Line smoothing={smoothing} tension={tension} theme={lineTheme}/>
 			<Area smoothing={smoothing} tension={tension} theme={areaTheme}/>
 		</Chart>
