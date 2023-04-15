@@ -25,6 +25,10 @@ export default function RatingView({ name }: { name: string}) {
 			<View style={styles.ratingBox}>
 				<RatingsGraph data={data}/>
 				<RatingSlider/>
+				<View style={styles.ratingBoxEndpoints}>
+					<Text>Miss</Text>
+					<Text>Hit</Text>
+				</View>
 			</View>
 		</View>
 	)
@@ -45,6 +49,11 @@ const styles = StyleSheet.create({
 		backgroundColor: "red",
 		alignItems: "center",
 		justifyContent: "center",
+	},
+	ratingBoxEndpoints: {
+		width: 300,
+		flexDirection: "row",
+		justifyContent: "space-between",
 	},
 	title: {
 		color: "red",

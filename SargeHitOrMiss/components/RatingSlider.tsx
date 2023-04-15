@@ -21,12 +21,19 @@ export default function RatingSlider() {
 
 function SliderTip(value: number, index: number) {
 	return (
-		<Text>{index}</Text>
+		<View style={styles.tip}>
+			<Text>{index}</Text>
+		</View>
 	)
 }
 
 const styles = StyleSheet.create({
 	container: {
 		width: 300,
+		marginTop: -29,
+		marginBottom: -15,
+	},
+	tip: {
+		transform: [{ translateX: -4}],
 	},
 });

@@ -3,7 +3,6 @@ import { Chart, Line, Area } from "react-native-responsive-linechart";
 const chartStyle = {
 	height: 200,
 	width: 300,
-	marginBottom: -30,
 };
 const color = "orange";
 const lineTheme = {
