@@ -3,7 +3,7 @@ import { useState } from "react";
 import RatingSliderGraph from './RatingSliderGraph';
 
 export default function RatingView({ name }: { name: string }) {
-	const [rating, setRating] = useState(5);
+	const [rating, setRating] = useState(4);
 	const [comment, setComment] = useState("");
 
 	const onButtonPress = () => {
@@ -24,8 +24,8 @@ export default function RatingView({ name }: { name: string }) {
 						<View style={styles.graph}>
 							<RatingSliderGraph rating={rating} setRating={setRating}/>
 						</View>
-						<View style={styles.commentBox}>
-							<TextInput
+						<View style={styles.commentBoxContainer}>
+							<TextInput style={styles.commentBox}
 								placeholder="opt. comment (140 chars)"
 								onChangeText={setComment}
 								value={comment}
@@ -35,6 +35,7 @@ export default function RatingView({ name }: { name: string }) {
 							<Button
 								onPress={onButtonPress}
 								title="Submit Rating"
+								color="white"
 							/>
 						</View>
 					</View>
@@ -53,32 +54,36 @@ const styles = StyleSheet.create({
 	},
 	titlePanel: {
 		flex: 1,
-		backgroundColor: "green",
+		backgroundColor: "white",
 		alignItems: "center",
 		justifyContent: "center",
 	},
 	title: {
-		color: "red",
+		color: "black",
 		fontSize: 72,
+		fontWeight: "200",
 	},
 	inputPanel: {
 		flex: 3,
-		backgroundColor: "red",
+		backgroundColor: "white",
 		alignItems: "center",
 		justifyContent: "center",
 	},
 	graph: {
 		margin: 15,
 	},
-	commentBox: {
-		borderRadius: 5,
-		border: 10,
-		backgroundColor: "white",
+	commentBoxContainer: {
 		width: 300,
 		margin: 15,
 	},
+	commentBox: {
+		height: 50,
+		fontSize: 24,
+	},
 	submitButton: {
-		backgroundColor: "blue",
+		backgroundColor: "orange",
 		borderRadius: 15,
+		fontSize: 10,
+		fontWeight: "light",
 	},
 });

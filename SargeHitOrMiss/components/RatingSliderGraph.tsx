@@ -1,5 +1,5 @@
-import RatingsGraph from './RatingsGraph';
-import RatingSlider from './RatingSlider';
+import { Chart, Line, Area } from "react-native-responsive-linechart";
+import { Slider } from "@miblanchard/react-native-slider";
 import { View, Text, StyleSheet } from 'react-native';
 
 const data = [
@@ -13,15 +13,65 @@ const data = [
 	{ x: 7, y: 6 },
 ];
 
+const chartStyle = {
+	height: 200,
+	width: 300,
+};
+const color = "orange";
+const lineTheme = {
+	stroke: {
+		color: color,
+		width: 3,
+	}
+};
+const areaTheme = {
+	gradient: {
+		from: {
+			color: color,
+			opacity: 1,
+		},
+		to: {
+			color: color,
+			opacity: 0,
+		},
+	},
+};
+const smoothing = "bezier";
+const tension = 0.3;
+
 export default function RatingSliderGraph({ rating, setRating }: { rating: number, setRating: (newRating: number) => void }) {
 	return (
 		<View>
-			<RatingsGraph data={data}/>
-			<RatingSlider rating={rating} setRating={setRating}/>
-			<View style={styles.ratingBoxEndpoints}>
-				<Text>Miss</Text>
-				<Text>Hit</Text>
+			{/* ignore type error about Chart's children; works fine */}
+			<Chart style={chartStyle} data={data} xDomain={{ min: 0, max: 7 }} yDomain={{ min: -1, max: 20 }} disableGestures>
+				<Line smoothing={smoothing} tension={tension} theme={lineTheme}/>
+				<Area smoothing={smoothing} tension={tension} theme={areaTheme}/>
+			</Chart>
+			<View style={styles.slider}>
+				<Slider
+					value={rating}
+					onValueChange={newRating => setRating(newRating)} // can ingnore type error here; works fine
+					minimumValue={0}
+					maximumValue={7}
+					step={1}
+					maximumTrackTintColor={color}
+					minimumTrackTintColor={color}
+					thumbTintColor={color}
+					renderBelowThumbComponent={SliderTip}
+				/>
 			</View>
+			<View style={styles.ratingBoxEndpoints}>
+				<Text style={styles.text}>Miss</Text>
+				<Text style={styles.text}>Hit</Text>
+			</View>
+		</View>
+	)
+}
+
+function SliderTip(value: number, index: number) {
+	return (
+		<View style={styles.tip}>
+			<Text style={styles.text}>{index}</Text>
 		</View>
 	)
 }
@@ -32,4 +82,16 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		justifyContent: "space-between",
 	},
+	slider: {
+		width: 300,
+		marginTop: -29,
+		marginBottom: -15,
+	},
+	tip: {
+		transform: [{ translateX: -5}],
+	},
+	text: {
+		fontSize: 24,
+		fontWeight: "200",
+	}
 });
