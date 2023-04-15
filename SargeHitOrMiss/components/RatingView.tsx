@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 	},
 	titlePanel: {
-		flex: 2,
+		flex: 1,
 		backgroundColor: "green",
 		alignItems: "center",
 		justifyContent: "center",
