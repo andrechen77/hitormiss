@@ -1,8 +1,8 @@
-import { StyleSheet, View, KeyboardAvoidingView, Text, TextInput, Button, Alert } from 'react-native';
+import { StyleSheet, View, KeyboardAvoidingView, Text, TextInput, Button, Alert, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { useState } from "react";
 import RatingSliderGraph from './RatingSliderGraph';
 
-export default function RatingView({ name }: { name: string}) {
+export default function RatingView({ name }: { name: string }) {
 	const [rating, setRating] = useState(5);
 	const [comment, setComment] = useState("");
 
@@ -11,34 +11,44 @@ export default function RatingView({ name }: { name: string}) {
 	}
 
 	return (
-		<View style={styles.container}>
-			<View style={styles.titlePanel}>
-				<Text style={styles.title}>{name}</Text>
-			</View>
-			<View style={styles.inputPanel}>
-				<View style={styles.graph}>
-					<RatingSliderGraph rating={rating} setRating={setRating}/>
+		<KeyboardAvoidingView
+			behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+			style={styles.container}
+		>
+			<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+				<View style={styles.innerContainer}>
+					<View style={styles.titlePanel}>
+						<Text style={styles.title}>{name}</Text>
+					</View>
+					<View style={styles.inputPanel}>
+						<View style={styles.graph}>
+							<RatingSliderGraph rating={rating} setRating={setRating}/>
+						</View>
+						<View style={styles.commentBox}>
+							<TextInput
+								placeholder="opt. comment (140 chars)"
+								onChangeText={setComment}
+								value={comment}
+							/>
+						</View>
+						<View style={styles.submitButton}>
+							<Button
+								onPress={onButtonPress}
+								title="Submit Rating"
+							/>
+						</View>
+					</View>
 				</View>
-				<View style={styles.commentBox}>
-					<TextInput
-						placeholder="opt. comment (140 chars)"
-						onChangeText={setComment}
-						value={comment}
-					/>
-				</View>
-				<View style={styles.submitButton}>
-					<Button
-						onPress={onButtonPress}
-						title="Submit Rating"
-					/>
-				</View>
-			</View>
-		</View>
+			</TouchableWithoutFeedback>
+		</KeyboardAvoidingView>
 	)
 }
 
 const styles = StyleSheet.create({
 	container: {
+		flex: 1,
+	},
+	innerContainer: {
 		flex: 1,
 	},
 	titlePanel: {
