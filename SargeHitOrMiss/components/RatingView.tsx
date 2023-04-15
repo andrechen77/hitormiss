@@ -1,8 +1,9 @@
 import { StyleSheet, View, Text } from 'react-native';
 import RatingsGraph from './RatingsGraph';
+import RatingSlider from './RatingSlider';
 
 const data = [
-	{ x: 0, y: 10 },
+	{ x: 0, y: 0 },
 	{ x: 1, y: 1 },
 	{ x: 2, y: 3 },
 	{ x: 3, y: 6 },
@@ -23,6 +24,7 @@ export default function RatingView({ name }: { name: string}) {
 			</View>
 			<View style={styles.ratingBox}>
 				<RatingsGraph data={data}/>
+				<RatingSlider/>
 			</View>
 		</View>
 	)
