@@ -1,10 +1,7 @@
 import { Slider } from "@miblanchard/react-native-slider";
-import { useState } from "react";
 import { View, Text, StyleSheet } from 'react-native';
 
-export default function RatingSlider() {
-	const [rating, setRating] = useState(5);
-
+export default function RatingSlider({ rating, setRating }: { rating: number, setRating: (newRating: number) => void }) {
 	return (
 		<View style={styles.container}>
 			<Slider

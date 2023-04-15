@@ -1,30 +1,36 @@
-import { StyleSheet, View, Text } from 'react-native';
-import RatingsGraph from './RatingsGraph';
-import RatingSlider from './RatingSlider';
-
-const data = [
-	{ x: 0, y: 0 },
-	{ x: 1, y: 1 },
-	{ x: 2, y: 3 },
-	{ x: 3, y: 6 },
-	{ x: 4, y: 10 },
-	{ x: 5, y: 15 },
-	{ x: 6, y: 10 },
-	{ x: 7, y: 6 },
-];
+import { StyleSheet, View, KeyboardAvoidingView, Text, TextInput, Button, Alert } from 'react-native';
+import { useState } from "react";
+import RatingSliderGraph from './RatingSliderGraph';
 
 export default function RatingView({ name }: { name: string}) {
+	const [rating, setRating] = useState(5);
+	const [comment, setComment] = useState("");
+
+	const onButtonPress = () => {
+		Alert.alert(`submitting or some sht\nRating: ${rating}${comment && `\nComment: ${comment}`}`);
+	}
+
 	return (
 		<View style={styles.container}>
-			<View style={styles.titleBox}>
+			<View style={styles.titlePanel}>
 				<Text style={styles.title}>{name}</Text>
 			</View>
-			<View style={styles.ratingBox}>
-				<RatingsGraph data={data}/>
-				<RatingSlider/>
-				<View style={styles.ratingBoxEndpoints}>
-					<Text>Miss</Text>
-					<Text>Hit</Text>
+			<View style={styles.inputPanel}>
+				<View style={styles.graph}>
+					<RatingSliderGraph rating={rating} setRating={setRating}/>
+				</View>
+				<View style={styles.commentBox}>
+					<TextInput
+						placeholder="opt. comment (140 chars)"
+						onChangeText={setComment}
+						value={comment}
+					/>
+				</View>
+				<View style={styles.submitButton}>
+					<Button
+						onPress={onButtonPress}
+						title="Submit Rating"
+					/>
 				</View>
 			</View>
 		</View>
@@ -35,25 +41,34 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 	},
-	titleBox: {
+	titlePanel: {
 		flex: 2,
 		backgroundColor: "green",
 		alignItems: "center",
 		justifyContent: "center",
 	},
-	ratingBox: {
+	title: {
+		color: "red",
+		fontSize: 72,
+	},
+	inputPanel: {
 		flex: 3,
 		backgroundColor: "red",
 		alignItems: "center",
 		justifyContent: "center",
 	},
-	ratingBoxEndpoints: {
-		width: 300,
-		flexDirection: "row",
-		justifyContent: "space-between",
+	graph: {
+		margin: 15,
 	},
-	title: {
-		color: "red",
-		fontSize: 72,
+	commentBox: {
+		borderRadius: 5,
+		border: 10,
+		backgroundColor: "white",
+		width: 300,
+		margin: 15,
+	},
+	submitButton: {
+		backgroundColor: "blue",
+		borderRadius: 15,
 	},
 });
