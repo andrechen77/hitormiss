@@ -1,4 +1,19 @@
 import { StyleSheet, View, Text } from 'react-native';
+import RatingsGraph from './RatingsGraph';
+
+const data = [
+	{ x: 0, y: 10 },
+	{ x: 1, y: 1 },
+	{ x: 2, y: 3 },
+	{ x: 3, y: 6 },
+	{ x: 4, y: 10 },
+	{ x: 5, y: 15 },
+	{ x: 6, y: 10 },
+	{ x: 7, y: 6 },
+	{ x: 8, y: 3 },
+	{ x: 9, y: 1 },
+	{ x: 10, y: 0 },
+];
 
 export default function RatingView({ name }: { name: string}) {
 	return (
@@ -7,7 +22,7 @@ export default function RatingView({ name }: { name: string}) {
 				<Text style={styles.title}>{name}</Text>
 			</View>
 			<View style={styles.ratingBox}>
-				<Text style={{ fontSize: 72, }}>Ratings go here</Text>
+				<RatingsGraph data={data}/>
 			</View>
 		</View>
 	)
