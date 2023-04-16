@@ -1,4 +1,4 @@
-import { Alert, Button, StyleSheet, TextInput, View } from 'react-native';
+import { Button, StyleSheet, TextInput, View, ActivityIndicator } from 'react-native';
 import RatingSliderGraph from './RatingSliderGraph';
 import { useState } from "react";
 
@@ -11,22 +11,45 @@ interface Review {
 	tweet: string,
 }
 
+async function sendReview(review: Review): Promise<boolean> {
+	try {
+		const response = await fetch(
+			"https://dif1okje93.execute-api.us-east-2.amazonaws.com/Testing/InsertRating",
+			{
+				method: "POST",
+				headers: {
+					"Accept": "application/json",
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(review),
+			},
+		);
+		const json = await response.json();
+		// Alert.alert(JSON.stringify(json));
+		return true;
+	} catch (error) {
+		return false;
+	}
+}
+
 export function RatingInputPanel({ id }: { id: string }) {
 	const [rating, setRating] = useState(defaultRating);
 	const [comment, setComment] = useState("");
 	const [disabled, setDisabled] = useState(false);
+	const [sending, setSending] = useState(false);
 
 	const onSubmit = () => {
 		setDisabled(true);
+		setSending(true);
 		const review: Review = {
 			dininghall: id,
 			rating: rating,
 			undercooked: false,
 			tweet: comment,
 		};
-		const message = JSON.stringify(review);
-		// send message to backend here
-		Alert.alert(`submitting or some sht\n${message}`);
+		sendReview(review).then((success) => {
+			setSending(false);
+		});
 	};
 
 	const onReset = () => {
@@ -50,21 +73,25 @@ export function RatingInputPanel({ id }: { id: string }) {
 					editable={!disabled}
 				/>
 			</View>
-			<View style={styles.submitButton}>
-				{disabled ?
-					<Button
-						onPress={onReset}
-						title="Write another review"
-						color="white"
-					/>
-				:
-					<Button
-						onPress={onSubmit}
-						title="Submit review"
-						color="white"
-					/>
-				}
-			</View>
+			{sending ?
+				<ActivityIndicator style={styles.activityIndicator}/>
+			:
+				<View style={styles.submitButton}>
+					{disabled ?
+						<Button
+							onPress={onReset}
+							title="Write another review"
+							color="white"
+						/>
+					:
+						<Button
+							onPress={onSubmit}
+							title="Submit review"
+							color="white"
+						/>
+					}
+				</View>
+			}
 		</View>
 	);
 }
@@ -92,6 +119,9 @@ const styles = StyleSheet.create({
 	},
 	grayedText: {
 		opacity: 0.25,
+	},
+	activityIndicator: {
+		margin: 7,
 	},
 	submitButton: {
 		backgroundColor: "orange",
