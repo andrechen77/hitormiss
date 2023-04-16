@@ -2,7 +2,7 @@ import { Alert, Button, StyleSheet, TextInput, View } from 'react-native';
 import RatingSliderGraph from './RatingSliderGraph';
 import { useState } from "react";
 
-const defaultRating = 4;
+const defaultRating = 0.5;
 
 export function RatingInputPanel({ id }: { id: string }) {
 	const [rating, setRating] = useState(defaultRating);
@@ -23,7 +23,7 @@ export function RatingInputPanel({ id }: { id: string }) {
 	return (
 		<View style={styles.container}>
 			<View style={styles.graph}>
-				<RatingSliderGraph disabled={disabled} rating={rating} setRating={setRating}/>
+				<RatingSliderGraph id={id} disabled={disabled} rating={rating} setRating={setRating}/>
 			</View>
 			<View style={styles.commentBoxContainer}>
 				<TextInput style={styles.commentBox}
