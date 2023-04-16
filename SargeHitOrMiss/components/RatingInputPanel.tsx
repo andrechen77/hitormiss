@@ -4,7 +4,7 @@ import { useState } from "react";
 
 const defaultRating = 4;
 
-export function RatingInputPanel() {
+export function RatingInputPanel({ id }: { id: string }) {
 	const [rating, setRating] = useState(defaultRating);
 	const [comment, setComment] = useState("");
 	const [disabled, setDisabled] = useState(false);

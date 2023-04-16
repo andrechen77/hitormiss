@@ -7,7 +7,7 @@ const data: MenuItem[] = [
 	"TOAST",
 ];
 
-export default function MenuDisplay({ name }: { name: string }) {
+export default function MenuDisplay({ id }: { id: string }) {
 	return (
 		<View style={styles.container}>
 			<View style={styles.titleBox}>
