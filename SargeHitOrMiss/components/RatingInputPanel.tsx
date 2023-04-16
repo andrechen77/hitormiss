@@ -27,13 +27,12 @@ export function RatingInputPanel({ id }: { id: string }) {
 		const message = JSON.stringify(review);
 		// send message to backend here
 		Alert.alert(`submitting or some sht\n${message}`);
-	}
+	};
 
 	const onReset = () => {
-		setRating(defaultRating);
 		setComment("");
 		setDisabled(false);
-	}
+	};
 
 	return (
 		<View style={styles.container}>
@@ -41,12 +40,13 @@ export function RatingInputPanel({ id }: { id: string }) {
 				<RatingSliderGraph id={id} disabled={disabled} rating={rating} setRating={setRating}/>
 			</View>
 			<View style={styles.commentBoxContainer}>
-				<TextInput style={styles.commentBox}
-					placeholder={disabled ? "no comment" : "opt. comment (140 chars)"}
+				<TextInput
+					style={[styles.commentBox, disabled && styles.grayedText]}
+					placeholder={"opt. comment (140 chars)"}
 					onChangeText={setComment}
 					maxLength={140}
 					multiline
-					value={comment}
+					value={disabled && comment === "" ? "no comment" : comment}
 					editable={!disabled}
 				/>
 			</View>
@@ -89,6 +89,9 @@ const styles = StyleSheet.create({
 		height: 65,
 		fontSize: 24,
 		padding: 10,
+	},
+	grayedText: {
+		opacity: 0.25,
 	},
 	submitButton: {
 		backgroundColor: "orange",
