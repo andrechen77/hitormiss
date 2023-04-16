@@ -1,7 +1,7 @@
-import { Button, StyleSheet, TextInput, View, ActivityIndicator } from 'react-native';
+import { Button, StyleSheet, TextInput, View, ActivityIndicator, Text } from 'react-native';
 import RatingSliderGraph from './RatingSliderGraph';
 import { useState, useContext } from "react";
-import {Alert} from "react-native";
+import { Switch } from "react-native";
 import { DataContext } from '../contexts/DataContext';
 
 const defaultRating = 0.5;
@@ -36,6 +36,7 @@ async function sendReview(review: Review): Promise<boolean> {
 export function RatingInputPanel({ id }: { id: string }) {
 	const [rating, setRating] = useState(defaultRating);
 	const [comment, setComment] = useState("");
+	const [undercooked, setUndercooked] = useState(false);
 	const [disabled, setDisabled] = useState(false);
 	const [sending, setSending] = useState(false);
 	const { requestReload } = useContext(DataContext);
@@ -46,7 +47,7 @@ export function RatingInputPanel({ id }: { id: string }) {
 		const review: Review = {
 			dininghall: id,
 			rating: rating,
-			undercooked: false,
+			undercooked: undercooked,
 			tweet: comment,
 		};
 		sendReview(review).then((success) => {
@@ -78,6 +79,15 @@ export function RatingInputPanel({ id }: { id: string }) {
 					editable={!disabled}
 				/>
 			</View>
+			{id === "sargent" && <View style={styles.undercookedIndicator}>
+				<Switch
+					disabled={disabled}
+					onValueChange={setUndercooked}
+					value={undercooked}
+					trackColor={{ false: "orange", true: "orange" }}
+				/>
+				<Text style={styles.labelStyle}>Undercooked</Text>
+			</View>}
 			{sending ?
 				<ActivityIndicator style={styles.activityIndicator}/>
 			:
@@ -121,6 +131,17 @@ const styles = StyleSheet.create({
 		height: 65,
 		fontSize: 24,
 		padding: 10,
+	},
+	undercookedIndicator: {
+		width: 300,
+		margin: 10,
+		flexDirection: "row",
+		alignItems: "center",
+	},
+	labelStyle: {
+		fontSize: 18,
+		fontWeight: "200",
+		margin: 10
 	},
 	grayedText: {
 		opacity: 0.25,
