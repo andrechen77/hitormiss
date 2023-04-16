@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
 	},
 	titlePanel: {
 		flex: 1,
-		backgroundColor: "blue",
+		backgroundColor: "white",
 		alignItems: "center",
 		justifyContent: "center",
 	},

@@ -3,6 +3,6 @@ import RatingView from "./RatingView";
 
 export default function PageSargent() {
 	return (
-		<RatingView name="Sargent Hall"/>
+		<RatingView name="Sarge 🤮"/>
 	);
 }
