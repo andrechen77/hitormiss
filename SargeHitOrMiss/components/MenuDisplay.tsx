@@ -1,13 +1,19 @@
 import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { MenuItem, MenuData, DataContext } from '../contexts/DataContext'
+import { useContext } from 'react';
 
-type MenuItem = string;
+export default function MenuDisplay({ id }: { id: string }) {
+	const { menuData } = useContext(DataContext);
 
-const data: MenuItem[] = [
-	"Scrambled Eggs",
-	"TOAST",
-];
+	const data: MenuItem[] = [];
+	if (menuData.hasOwnProperty(id)) {
+		for (const meal in menuData[id]) {
+			for (const item of menuData[id][meal]) {
+				data.push(item);
+			}
+		}
+	}
 
-export default function MenuDisplay({ name }: { name: string }) {
 	return (
 		<View style={styles.container}>
 			<View style={styles.titleBox}>

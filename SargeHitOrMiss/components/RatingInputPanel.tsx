@@ -1,55 +1,102 @@
-import { Alert, Button, StyleSheet, TextInput, View } from 'react-native';
+import { Button, StyleSheet, TextInput, View, ActivityIndicator } from 'react-native';
 import RatingSliderGraph from './RatingSliderGraph';
-import { useState } from "react";
+import { useState, useContext } from "react";
+import {Alert} from "react-native";
+import { DataContext } from '../contexts/DataContext';
 
-const defaultRating = 4;
+const defaultRating = 0.5;
 
-export function RatingInputPanel() {
+interface Review {
+	dininghall: string,
+	rating: number,
+	undercooked: boolean,
+	tweet: string,
+}
+
+async function sendReview(review: Review): Promise<boolean> {
+	try {
+		const response = await fetch(
+			"https://dif1okje93.execute-api.us-east-2.amazonaws.com/Testing/InsertRating",
+			{
+				method: "POST",
+				headers: {
+					"Accept": "text",
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(review),
+			},
+		);
+		// const msg = await response.text();
+		return true;
+	} catch (error) {
+		return false;
+	}
+}
+
+export function RatingInputPanel({ id }: { id: string }) {
 	const [rating, setRating] = useState(defaultRating);
 	const [comment, setComment] = useState("");
 	const [disabled, setDisabled] = useState(false);
+	const [sending, setSending] = useState(false);
+	const { requestReload } = useContext(DataContext);
 
 	const onSubmit = () => {
 		setDisabled(true);
-		Alert.alert(`submitting or some sht\nRating: ${rating}${comment && `\nComment: ${comment}`}`);
-	}
+		setSending(true);
+		const review: Review = {
+			dininghall: id,
+			rating: rating,
+			undercooked: false,
+			tweet: comment,
+		};
+		sendReview(review).then((success) => {
+			setSending(false);
+			if (success) {
+				requestReload();
+			}
+		});
+	};
 
 	const onReset = () => {
-		setRating(defaultRating);
 		setComment("");
 		setDisabled(false);
-	}
+	};
 
 	return (
 		<View style={styles.container}>
 			<View style={styles.graph}>
-				<RatingSliderGraph disabled={disabled} rating={rating} setRating={setRating}/>
+				<RatingSliderGraph id={id} disabled={disabled} rating={rating} setRating={setRating}/>
 			</View>
 			<View style={styles.commentBoxContainer}>
-				<TextInput style={styles.commentBox}
-					placeholder={disabled ? "no comment" : "opt. comment (140 chars)"}
+				<TextInput
+					style={[styles.commentBox, disabled && styles.grayedText]}
+					placeholder={"opt. comment (140 chars)"}
 					onChangeText={setComment}
 					maxLength={140}
 					multiline
-					value={comment}
+					value={disabled && comment === "" ? "no comment" : comment}
 					editable={!disabled}
 				/>
 			</View>
-			<View style={styles.submitButton}>
-				{disabled ?
-					<Button
-						onPress={onReset}
-						title="Write another rating"
-						color="white"
-					/>
-				:
-					<Button
-						onPress={onSubmit}
-						title="Submit Rating"
-						color="white"
-					/>
-				}
-			</View>
+			{sending ?
+				<ActivityIndicator style={styles.activityIndicator}/>
+			:
+				<View style={styles.submitButton}>
+					{disabled ?
+						<Button
+							onPress={onReset}
+							title="Write another review"
+							color="white"
+						/>
+					:
+						<Button
+							onPress={onSubmit}
+							title="Submit review"
+							color="white"
+						/>
+					}
+				</View>
+			}
 		</View>
 	);
 }
@@ -74,6 +121,12 @@ const styles = StyleSheet.create({
 		height: 65,
 		fontSize: 24,
 		padding: 10,
+	},
+	grayedText: {
+		opacity: 0.25,
+	},
+	activityIndicator: {
+		margin: 7,
 	},
 	submitButton: {
 		backgroundColor: "orange",

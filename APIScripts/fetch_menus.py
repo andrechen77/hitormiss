@@ -97,8 +97,8 @@ conn = psycopg2.connect(
 cur = conn.cursor()
 
 # Dining hall and Meal Arrays
-dining_halls = ["Allison", "Sargent", "Plex West", "Plex East", "Elder"]
-meal_types = ["Breakfast", "Lunch", "Dinner"]
+dining_halls = ["allison", "sargent", "plex_west", "plex_east", "elder"]
+meal_types = ["breakfast", "lunch", "dinner"]
 
 # Insert rows
 for (el, menu) in enumerate(menus):

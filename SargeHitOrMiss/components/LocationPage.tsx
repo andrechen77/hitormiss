@@ -2,11 +2,14 @@ import { StyleSheet, View, KeyboardAvoidingView, Text, TextInput, Button, Alert,
 import { RatingInputPanel } from './RatingInputPanel';
 import IconButton from './IconButton';
 import MenuDisplay from './MenuDisplay';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import SlideUpModal from './SlideUpModal';
 import CommentsDisplay from './CommentsDisplay';
+import { DataContext } from '../contexts/DataContext';
 
-export default function RatingView({ name }: { name: string }) {
+export default function LocationPage({ id, displayName }: { id: string, displayName: string }) {
+	const { requestReload } = useContext(DataContext);
+
 	const [currentView, setCurrentView] = useState<"main" | "menu" | "comments">("main");
 
 	return (
@@ -17,20 +20,21 @@ export default function RatingView({ name }: { name: string }) {
 			<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 				<View style={styles.innerContainer}>
 					<View style={styles.titlePanel}>
-						<Text style={styles.title}>{name}</Text>
+						<Text style={styles.title}>{displayName}</Text>
 					</View>
 					<View style={styles.inputPanel}>
-						<RatingInputPanel/>
+						<RatingInputPanel id={id}/>
 					</View>
 					<View style={styles.navButtons}>
 						<IconButton name="library-books" onPress={() => setCurrentView("menu")}/>
 						<IconButton name="feedback" onPress={() => setCurrentView("comments")}/>
+						<IconButton name="replay" onPress={requestReload}/>
 					</View>
 					<SlideUpModal visible={currentView === "menu"} onClose={() => setCurrentView("main")}>
-						<MenuDisplay name={name}/>
+						<MenuDisplay id={id}/>
 					</SlideUpModal>
 					<SlideUpModal visible={currentView === "comments"} onClose={() => setCurrentView("main")}>
-						<CommentsDisplay name={name}/>
+						<CommentsDisplay id={id}/>
 					</SlideUpModal>
 				</View>
 			</TouchableWithoutFeedback>

@@ -12,7 +12,7 @@ const data: Comment[] = [
 	{ time: new Date(), content: "chef jet busted my ass chef jet busted my ass chef jet busted my ass chef jet busted my ass"},
 ];
 
-export default function CommentsDisplay({ name }: { name: string }) {
+export default function CommentsDisplay({ id }: { id: string }) {
 	return (
 		<View style={styles.container}>
 			<View style={styles.titleBox}>

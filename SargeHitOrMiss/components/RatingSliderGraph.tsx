@@ -1,22 +1,9 @@
-import { Chart, Line, Area } from "react-native-responsive-linechart";
+import { Chart, Line, Area, ChartDataPoint } from "react-native-responsive-linechart";
 import { Slider } from "@miblanchard/react-native-slider";
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { DataContext, RatingData } from '../contexts/DataContext';
+import { useContext } from 'react';
 
-const data = [
-	{ x: 0, y: 0 },
-	{ x: 1, y: 1 },
-	{ x: 2, y: 3 },
-	{ x: 3, y: 6 },
-	{ x: 4, y: 10 },
-	{ x: 5, y: 15 },
-	{ x: 6, y: 10 },
-	{ x: 7, y: 6 },
-];
-
-const chartStyle = {
-	height: 200,
-	width: 300,
-};
 const color = "orange";
 const lineTheme = {
 	stroke: {
@@ -40,33 +27,57 @@ const smoothing = "bezier";
 const tension = 0.3;
 
 interface RatingSliderGraphProps {
+	id: string,
 	disabled: boolean,
 	rating: number,
 	setRating: (newRating: number) => void,
 }
 
-export default function RatingSliderGraph({ disabled, rating, setRating }: RatingSliderGraphProps) {
+export default function RatingSliderGraph({ id, disabled, rating, setRating }: RatingSliderGraphProps) {
+	const { loading, ratingData } = useContext(DataContext);
+	// const loading = false;
+	// const ratingData = {
+	// 	"allison": [],
+	// 	"sargent": [0.2, 0.4],
+	// };
+	const frequencies = calculateFrequencies(ratingData, id);
+	const graphCeiling = Math.max(...frequencies.map(({ x, y }) => y), 2) + 0.1; // include 2 to have at least one data point (and to prevent the max from falling below 2)
+
 	return (
 		<View>
-			{/* ignore type error about Chart's children; works fine */}
-			<Chart style={chartStyle} data={data} xDomain={{ min: 0, max: 7 }} yDomain={{ min: -1, max: 20 }} disableGestures>
-				<Line smoothing={smoothing} tension={tension} theme={lineTheme}/>
-				<Area smoothing={smoothing} tension={tension} theme={areaTheme}/>
-			</Chart>
+			{ loading ?
+				<View style={styles.loadingView}>
+					<ActivityIndicator/>
+				</View>
+			:
+				/* @ts-ignore */
+				<Chart
+					style={styles.chartStyle}
+					data={frequencies}
+					xDomain={{ min: 0, max: 1 }}
+					yDomain={{ min: 0, max: graphCeiling }}
+					disableGestures
+				>
+					<Line smoothing={smoothing} tension={tension} theme={lineTheme}/>
+					<Area smoothing={smoothing} tension={tension} theme={areaTheme}/>
+				</Chart>
+			}
 			<View style={styles.slider}>
 				<Slider
 					disabled={disabled}
 					value={rating}
-					onValueChange={newRating => setRating(newRating)} // can ingnore type error here; works fine
+					onValueChange={newRating => setRating(newRating[0])}
 					minimumValue={0}
-					maximumValue={7}
-					step={1}
+					maximumValue={1}
+					step={0.01}
 					maximumTrackTintColor={color}
 					minimumTrackTintColor={color}
 					thumbTintColor={color}
 					thumbStyle={disabled ? { opacity: 0.5 } : {}}
 					renderBelowThumbComponent={SliderTip}
 					thumbTouchSize={{ width: 50, height: 80 }}
+					trackMarks={Array.from({ length: 6 }, (v, i) => i * 0.2)}
+					renderTrackMarkComponent={i => <View style={styles.trackMark}/>}
 				/>
 			</View>
 			<View style={styles.ratingBoxEndpoints}>
@@ -80,12 +91,22 @@ export default function RatingSliderGraph({ disabled, rating, setRating }: Ratin
 function SliderTip(value: number, index: number) {
 	return (
 		<View style={styles.tip}>
-			<Text style={styles.text}>{index}</Text>
+			<Text style={styles.text}>{index.toFixed(2)}</Text>
 		</View>
 	)
 }
 
 const styles = StyleSheet.create({
+	chartStyle: {
+		height: 200,
+		width: 300,
+	},
+	loadingView: {
+		height: 200,
+		width: 300,
+		alignItems: "center",
+		justifyContent: "center",
+	},
 	ratingBoxEndpoints: {
 		width: 300,
 		flexDirection: "row",
@@ -93,14 +114,45 @@ const styles = StyleSheet.create({
 	},
 	slider: {
 		width: 300,
-		marginTop: -29,
+		marginTop: -20,
 		marginBottom: -15,
 	},
+	trackMark: {
+		height: 10,
+		width: 3,
+		backgroundColor: color,
+		transform: [{ translateX: 8}],
+	},
 	tip: {
-		transform: [{ translateX: -5}],
+		transform: [{ translateX: -30}],
+		width: 60,
 	},
 	text: {
 		fontSize: 24,
 		fontWeight: "200",
-	}
+		textAlign: "center",
+	},
 });
+
+function calculateFrequencies(ratingData: RatingData, id: string): ChartDataPoint[] {
+	const frequencies = [];
+	for (let x = 0; x <= 1; x += 0.01) {
+		frequencies.push({ x: x, y: 0 });
+	}
+	if (ratingData.hasOwnProperty(id) && ratingData[id].length > 0) {
+		for (const rating of ratingData[id]) {
+			for (const point of frequencies) {
+				const delta = Math.pow(Math.E, -200 * Math.pow(rating - point.x, 2)); // factor of 50 because we choose SD = 0.05
+				point.y += delta;
+			}
+		}
+		/* Each rating added an area of 0.05sqrt(2pi)a to the total area. In order to normalize the
+		total area under the graph to be 1, we divide the whole graph by n*0.05sqrt(2pi). Be very
+		careful that we ensure that there is at least one data point. */
+		const totalArea = ratingData[id].length * 0.12533141;
+		for (const point of frequencies) {
+			point.y /= totalArea;
+		}
+	}
+	return frequencies;
+}
