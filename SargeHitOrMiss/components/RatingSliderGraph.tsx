@@ -58,6 +58,7 @@ export default function RatingSliderGraph({ rating, setRating }: { rating: numbe
 					minimumTrackTintColor={color}
 					thumbTintColor={color}
 					renderBelowThumbComponent={SliderTip}
+					thumbTouchSize={{ width: 50, height: 80 }}
 				/>
 			</View>
 			<View style={styles.ratingBoxEndpoints}>

@@ -28,6 +28,8 @@ export default function RatingView({ name }: { name: string }) {
 							<TextInput style={styles.commentBox}
 								placeholder="opt. comment (140 chars)"
 								onChangeText={setComment}
+								maxLength={140}
+								multiline
 								value={comment}
 							/>
 						</View>
@@ -77,8 +79,12 @@ const styles = StyleSheet.create({
 		margin: 15,
 	},
 	commentBox: {
-		height: 50,
+		borderColor: "black",
+		borderWidth: 1,
+		borderRadius: 10,
+		height: 65,
 		fontSize: 24,
+		padding: 10,
 	},
 	submitButton: {
 		backgroundColor: "orange",
