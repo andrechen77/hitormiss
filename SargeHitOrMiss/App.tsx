@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Button } from 'react-native';
-import Swiper from 'react-native-screens-swiper'; // ignore missing module declaration error; seems to work fine
+// @ts-ignore
+import Swiper from 'react-native-screens-swiper';
 import LocationPage from './components/LocationPage';
 import { RatingData, DataContext } from './contexts/DataContext';
 import { useState, useEffect } from 'react';

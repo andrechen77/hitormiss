@@ -48,8 +48,14 @@ export default function RatingSliderGraph({ id, disabled, rating, setRating }: R
 
 	return (
 		<View>
-			{/* ignore type error about Chart's children; works fine */}
-			<Chart style={chartStyle} data={frequencies} xDomain={{ min: 0, max: 1 }} yDomain={{ min: 0, max: graphCeiling }} disableGestures>
+			{/* @ts-ignore */}
+			<Chart
+				style={chartStyle}
+				data={frequencies}
+				xDomain={{ min: 0, max: 1 }}
+				yDomain={{ min: 0, max: graphCeiling }}
+				disableGestures
+			>
 				<Line smoothing={smoothing} tension={tension} theme={lineTheme}/>
 				<Area smoothing={smoothing} tension={tension} theme={areaTheme}/>
 			</Chart>
@@ -57,7 +63,7 @@ export default function RatingSliderGraph({ id, disabled, rating, setRating }: R
 				<Slider
 					disabled={disabled}
 					value={rating}
-					onValueChange={newRating => setRating(newRating)} // can ingnore type error here; works fine
+					onValueChange={newRating => setRating(newRating[0])}
 					minimumValue={0}
 					maximumValue={1}
 					step={0.01}
