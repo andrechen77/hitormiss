@@ -1,13 +1,9 @@
 import { Chart, Line, Area, ChartDataPoint } from "react-native-responsive-linechart";
 import { Slider } from "@miblanchard/react-native-slider";
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { DataContext, RatingData } from '../contexts/DataContext';
 import { useContext } from 'react';
 
-const chartStyle = {
-	height: 200,
-	width: 300,
-};
 const color = "orange";
 const lineTheme = {
 	stroke: {
@@ -39,7 +35,7 @@ interface RatingSliderGraphProps {
 }
 
 export default function RatingSliderGraph({ id, disabled, rating, setRating }: RatingSliderGraphProps) {
-	const ratingData = useContext(DataContext);
+	const { loading, ratingData } = useContext(DataContext);
 	// const ratingData = {
 	// 	"allison": [],
 	// 	"sargent": [0.2, 0.7],
@@ -48,17 +44,23 @@ export default function RatingSliderGraph({ id, disabled, rating, setRating }: R
 
 	return (
 		<View>
-			{/* @ts-ignore */}
-			<Chart
-				style={chartStyle}
-				data={frequencies}
-				xDomain={{ min: 0, max: 1 }}
-				yDomain={{ min: 0, max: graphCeiling }}
-				disableGestures
-			>
-				<Line smoothing={smoothing} tension={tension} theme={lineTheme}/>
-				<Area smoothing={smoothing} tension={tension} theme={areaTheme}/>
-			</Chart>
+			{ loading ?
+				<View style={styles.loadingView}>
+					<ActivityIndicator/>
+				</View>
+			:
+				/* @ts-ignore */
+				<Chart
+					style={styles.chartStyle}
+					data={frequencies}
+					xDomain={{ min: 0, max: 1 }}
+					yDomain={{ min: 0, max: graphCeiling }}
+					disableGestures
+				>
+					<Line smoothing={smoothing} tension={tension} theme={lineTheme}/>
+					<Area smoothing={smoothing} tension={tension} theme={areaTheme}/>
+				</Chart>
+			}
 			<View style={styles.slider}>
 				<Slider
 					disabled={disabled}
@@ -94,6 +96,16 @@ function SliderTip(value: number, index: number) {
 }
 
 const styles = StyleSheet.create({
+	chartStyle: {
+		height: 200,
+		width: 300,
+	},
+	loadingView: {
+		height: 200,
+		width: 300,
+		alignItems: "center",
+		justifyContent: "center",
+	},
 	ratingBoxEndpoints: {
 		width: 300,
 		flexDirection: "row",

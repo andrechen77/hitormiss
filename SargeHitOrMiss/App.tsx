@@ -1,5 +1,4 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button } from 'react-native';
 // @ts-ignore
 import Swiper from 'react-native-screens-swiper';
 import LocationPage from './components/LocationPage';
@@ -18,7 +17,8 @@ export default function App() {
 	const [ratingData, setRatingData] = useState<RatingData>({});
 	const [loading, setLoading] = useState(true);
 
-	const getData = async () => {
+	const loadData = async () => {
+		setLoading(true);
 		try {
 			const response = await fetch("https://dif1okje93.execute-api.us-east-2.amazonaws.com/Testing/GetRatings");
 			const json = await response.json();
@@ -31,11 +31,17 @@ export default function App() {
 	};
 
 	useEffect(() => {
-		getData();
+		loadData();
 	}, []);
 
 	return (
-		<DataContext.Provider value={ratingData}>
+		<DataContext.Provider
+			value={{
+				loading: loading,
+				requestReload: loadData,
+				ratingData: ratingData,
+			}}
+		>
 			<Swiper
 				data={
 					diningHalls.map(({ id, displayName }) => {

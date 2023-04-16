@@ -2,11 +2,14 @@ import { StyleSheet, View, KeyboardAvoidingView, Text, TextInput, Button, Alert,
 import { RatingInputPanel } from './RatingInputPanel';
 import IconButton from './IconButton';
 import MenuDisplay from './MenuDisplay';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import SlideUpModal from './SlideUpModal';
 import CommentsDisplay from './CommentsDisplay';
+import { DataContext } from '../contexts/DataContext';
 
 export default function LocationPage({ id, displayName }: { id: string, displayName: string }) {
+	const { requestReload } = useContext(DataContext);
+
 	const [currentView, setCurrentView] = useState<"main" | "menu" | "comments">("main");
 
 	return (
@@ -25,6 +28,7 @@ export default function LocationPage({ id, displayName }: { id: string, displayN
 					<View style={styles.navButtons}>
 						<IconButton name="library-books" onPress={() => setCurrentView("menu")}/>
 						<IconButton name="feedback" onPress={() => setCurrentView("comments")}/>
+						<IconButton name="replay" onPress={requestReload}/>
 					</View>
 					<SlideUpModal visible={currentView === "menu"} onClose={() => setCurrentView("main")}>
 						<MenuDisplay id={id}/>

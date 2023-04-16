@@ -1,6 +1,8 @@
 import { Button, StyleSheet, TextInput, View, ActivityIndicator } from 'react-native';
 import RatingSliderGraph from './RatingSliderGraph';
-import { useState } from "react";
+import { useState, useContext } from "react";
+import {Alert} from "react-native";
+import { DataContext } from '../contexts/DataContext';
 
 const defaultRating = 0.5;
 
@@ -18,14 +20,13 @@ async function sendReview(review: Review): Promise<boolean> {
 			{
 				method: "POST",
 				headers: {
-					"Accept": "application/json",
+					"Accept": "text",
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify(review),
 			},
 		);
-		const json = await response.json();
-		// Alert.alert(JSON.stringify(json));
+		// const msg = await response.text();
 		return true;
 	} catch (error) {
 		return false;
@@ -37,6 +38,7 @@ export function RatingInputPanel({ id }: { id: string }) {
 	const [comment, setComment] = useState("");
 	const [disabled, setDisabled] = useState(false);
 	const [sending, setSending] = useState(false);
+	const { requestReload } = useContext(DataContext);
 
 	const onSubmit = () => {
 		setDisabled(true);
@@ -49,6 +51,9 @@ export function RatingInputPanel({ id }: { id: string }) {
 		};
 		sendReview(review).then((success) => {
 			setSending(false);
+			if (success) {
+				requestReload();
+			}
 		});
 	};
 
