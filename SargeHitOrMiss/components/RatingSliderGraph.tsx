@@ -39,7 +39,13 @@ const areaTheme = {
 const smoothing = "bezier";
 const tension = 0.3;
 
-export default function RatingSliderGraph({ rating, setRating }: { rating: number, setRating: (newRating: number) => void }) {
+interface RatingSliderGraphProps {
+	disabled: boolean,
+	rating: number,
+	setRating: (newRating: number) => void,
+}
+
+export default function RatingSliderGraph({ disabled, rating, setRating }: RatingSliderGraphProps) {
 	return (
 		<View>
 			{/* ignore type error about Chart's children; works fine */}
@@ -49,6 +55,7 @@ export default function RatingSliderGraph({ rating, setRating }: { rating: numbe
 			</Chart>
 			<View style={styles.slider}>
 				<Slider
+					disabled={disabled}
 					value={rating}
 					onValueChange={newRating => setRating(newRating)} // can ingnore type error here; works fine
 					minimumValue={0}
@@ -57,6 +64,7 @@ export default function RatingSliderGraph({ rating, setRating }: { rating: numbe
 					maximumTrackTintColor={color}
 					minimumTrackTintColor={color}
 					thumbTintColor={color}
+					thumbStyle={disabled ? { opacity: 0.5 } : {}}
 					renderBelowThumbComponent={SliderTip}
 					thumbTouchSize={{ width: 50, height: 80 }}
 				/>
