@@ -4,6 +4,13 @@ import { useState } from "react";
 
 const defaultRating = 0.5;
 
+interface Review {
+	dininghall: string,
+	rating: number,
+	undercooked: boolean,
+	tweet: string,
+}
+
 export function RatingInputPanel({ id }: { id: string }) {
 	const [rating, setRating] = useState(defaultRating);
 	const [comment, setComment] = useState("");
@@ -11,7 +18,15 @@ export function RatingInputPanel({ id }: { id: string }) {
 
 	const onSubmit = () => {
 		setDisabled(true);
-		Alert.alert(`submitting or some sht\nRating: ${rating}${comment && `\nComment: ${comment}`}`);
+		const review: Review = {
+			dininghall: id,
+			rating: rating,
+			undercooked: false,
+			tweet: comment,
+		};
+		const message = JSON.stringify(review);
+		// send message to backend here
+		Alert.alert(`submitting or some sht\n${message}`);
 	}
 
 	const onReset = () => {
@@ -39,13 +54,13 @@ export function RatingInputPanel({ id }: { id: string }) {
 				{disabled ?
 					<Button
 						onPress={onReset}
-						title="Write another rating"
+						title="Write another review"
 						color="white"
 					/>
 				:
 					<Button
 						onPress={onSubmit}
-						title="Submit Rating"
+						title="Submit review"
 						color="white"
 					/>
 				}
