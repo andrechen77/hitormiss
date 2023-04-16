@@ -25,7 +25,6 @@ const areaTheme = {
 };
 const smoothing = "bezier";
 const tension = 0.3;
-const graphCeiling = 4;
 
 interface RatingSliderGraphProps {
 	id: string,
@@ -36,11 +35,13 @@ interface RatingSliderGraphProps {
 
 export default function RatingSliderGraph({ id, disabled, rating, setRating }: RatingSliderGraphProps) {
 	const { loading, ratingData } = useContext(DataContext);
+	// const loading = false;
 	// const ratingData = {
 	// 	"allison": [],
-	// 	"sargent": [0.2, 0.7],
+	// 	"sargent": [0.2, 0.4],
 	// };
 	const frequencies = calculateFrequencies(ratingData, id);
+	const graphCeiling = Math.max(...frequencies.map(({ x, y }) => y), 2) + 0.1; // include 2 to have at least one data point (and to prevent the max from falling below 2)
 
 	return (
 		<View>
@@ -151,7 +152,6 @@ function calculateFrequencies(ratingData: RatingData, id: string): ChartDataPoin
 		const totalArea = ratingData[id].length * 0.12533141;
 		for (const point of frequencies) {
 			point.y /= totalArea;
-			point.y = Math.min(point.y, graphCeiling);
 		}
 	}
 	return frequencies;
