@@ -2,7 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 // @ts-ignore
 import Swiper from 'react-native-screens-swiper';
 import LocationPage from './components/LocationPage';
-import { RatingData, DataContext } from './contexts/DataContext';
+import { RatingData, MenuData, DataContext } from './contexts/DataContext';
 import { useState, useEffect } from 'react';
 
 const diningHalls: { id: string, displayName: string }[] = [
@@ -15,14 +15,19 @@ const diningHalls: { id: string, displayName: string }[] = [
 
 export default function App() {
 	const [ratingData, setRatingData] = useState<RatingData>({});
+	const [menuData, setMenuData] = useState<MenuData>({});
 	const [loading, setLoading] = useState(true);
 
 	const loadData = async () => {
 		setLoading(true);
 		try {
-			const response = await fetch("https://dif1okje93.execute-api.us-east-2.amazonaws.com/Testing/GetRatings");
-			const json = await response.json();
-			setRatingData(json);
+			const ratingsResponse = await fetch("https://dif1okje93.execute-api.us-east-2.amazonaws.com/Testing/GetRatings");
+			const ratingsJson = await ratingsResponse.json();
+			setRatingData(ratingsJson);
+
+			const menuResponse = await fetch("https://dif1okje93.execute-api.us-east-2.amazonaws.com/GetMenus");
+			const menuJson = await menuResponse.json();
+			setMenuData(menuJson);
 		} catch (error) {
 			console.error(error);
 		} finally {
@@ -40,6 +45,7 @@ export default function App() {
 				loading: loading,
 				requestReload: loadData,
 				ratingData: ratingData,
+				menuData: menuData,
 			}}
 		>
 			<Swiper
