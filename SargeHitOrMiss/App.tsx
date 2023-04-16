@@ -5,26 +5,26 @@ import PageSargent from './components/PageSargent';
 import PageElder from './components/PageElder';
 
 export default function App() {
-  return (
-    <Swiper
-      data={[
-        {
-          tabLabel: "Sargent",
-          component: PageSargent,
-        },
-        {
-          tabLabel: "Elder",
-          component: PageElder,
-        },
-      ]}
-      isStaticPills={false}
-      style={swiperStyles}
-    />
-  );
+	return (
+		<Swiper
+			data={[
+				{
+					tabLabel: "Sargent",
+					component: PageSargent,
+				},
+				{
+					tabLabel: "Elder",
+					component: PageElder,
+				},
+			]}
+			isStaticPills={false}
+			style={swiperStyles}
+		/>
+	);
 }
 
 const swiperStyles = {
-  pillContainer: {
-    display: "none",
-  },
+	pillContainer: {
+		display: "none",
+	},
 };

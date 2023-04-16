@@ -1,8 +1,14 @@
-import { StyleSheet, View, KeyboardAvoidingView, Text, TextInput, Button, Alert, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { StyleSheet, View, KeyboardAvoidingView, Text, TextInput, Button, Alert, Platform, TouchableWithoutFeedback, Keyboard, Modal } from 'react-native';
 import { RatingInputPanel } from './RatingInputPanel';
 import IconButton from './IconButton';
+import MenuDisplay from './MenuDisplay';
+import React, { useState } from 'react';
+import SlideUpModal from './SlideUpModal';
+import CommentsDisplay from './CommentsDisplay';
 
 export default function RatingView({ name }: { name: string }) {
+	const [currentView, setCurrentView] = useState<"main" | "menu" | "comments">("main");
+
 	return (
 		<KeyboardAvoidingView
 			behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -17,9 +23,15 @@ export default function RatingView({ name }: { name: string }) {
 						<RatingInputPanel/>
 					</View>
 					<View style={styles.navButtons}>
-						<IconButton name="library-books" onPress={() => {Alert.alert("i've been touched")}}/>
-						<IconButton name="feedback" onPress={() => {Alert.alert("i've been touched")}}/>
+						<IconButton name="library-books" onPress={() => setCurrentView("menu")}/>
+						<IconButton name="feedback" onPress={() => setCurrentView("comments")}/>
 					</View>
+					<SlideUpModal visible={currentView === "menu"} onClose={() => setCurrentView("main")}>
+						<MenuDisplay name={name}/>
+					</SlideUpModal>
+					<SlideUpModal visible={currentView === "comments"} onClose={() => setCurrentView("main")}>
+						<CommentsDisplay name={name}/>
+					</SlideUpModal>
 				</View>
 			</TouchableWithoutFeedback>
 		</KeyboardAvoidingView>
@@ -35,7 +47,7 @@ const styles = StyleSheet.create({
 	},
 	titlePanel: {
 		flex: 1,
-		backgroundColor: "white",
+		backgroundColor: "blue",
 		alignItems: "center",
 		justifyContent: "center",
 	},
