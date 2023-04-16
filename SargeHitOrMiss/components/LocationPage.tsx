@@ -2,15 +2,28 @@ import { StyleSheet, View, KeyboardAvoidingView, Text, TextInput, Button, Alert,
 import { RatingInputPanel } from './RatingInputPanel';
 import IconButton from './IconButton';
 import MenuDisplay from './MenuDisplay';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import SlideUpModal from './SlideUpModal';
 import CommentsDisplay from './CommentsDisplay';
 import { DataContext } from '../contexts/DataContext';
 
 export default function LocationPage({ id, displayName }: { id: string, displayName: string }) {
 	const { requestReload } = useContext(DataContext);
-
 	const [currentView, setCurrentView] = useState<"main" | "menu" | "comments">("main");
+	const [hideNavButtons, setHideNavButtons] = useState(false);
+
+	useEffect(() => {
+		const showListener = Keyboard.addListener("keyboardWillShow", () => {
+			setHideNavButtons(true)
+		});
+		const hideListener = Keyboard.addListener("keyboardWillHide", () => {
+			setHideNavButtons(false)
+		});
+		return () => {
+			showListener.remove();
+			hideListener.remove();
+		}
+	});
 
 	return (
 		<KeyboardAvoidingView
@@ -25,10 +38,12 @@ export default function LocationPage({ id, displayName }: { id: string, displayN
 					<View style={styles.inputPanel}>
 						<RatingInputPanel id={id}/>
 					</View>
-					<View style={styles.navButtons}>
-						<IconButton name="library-books" onPress={() => setCurrentView("menu")}/>
-						<IconButton name="feedback" onPress={() => setCurrentView("comments")}/>
-						<IconButton name="replay" onPress={requestReload}/>
+					<View style={[styles.navButtons]}>
+						{!hideNavButtons && <>
+							<IconButton name="library-books" onPress={() => setCurrentView("menu")}/>
+							<IconButton name="feedback" onPress={() => setCurrentView("comments")}/>
+							<IconButton name="replay" onPress={requestReload}/>
+						</>}
 					</View>
 					<SlideUpModal visible={currentView === "menu"} onClose={() => setCurrentView("main")}>
 						<MenuDisplay id={id}/>
@@ -51,7 +66,6 @@ const styles = StyleSheet.create({
 	},
 	titlePanel: {
 		flex: 1,
-		backgroundColor: "white",
 		alignItems: "center",
 		justifyContent: "center",
 	},
@@ -64,7 +78,6 @@ const styles = StyleSheet.create({
 		flex: 3,
 		alignContent: "center",
 		justifyContent: "center",
-		// backgroundColor: "red",
 	},
 	navButtons: {
 		flex: 1,

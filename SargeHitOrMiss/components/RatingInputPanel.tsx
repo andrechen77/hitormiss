@@ -113,7 +113,6 @@ export function RatingInputPanel({ id }: { id: string }) {
 
 const styles = StyleSheet.create({
 	container: {
-		backgroundColor: "white",
 		alignItems: "center",
 		justifyContent: "center",
 	},

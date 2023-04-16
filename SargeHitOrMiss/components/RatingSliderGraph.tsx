@@ -74,7 +74,7 @@ export default function RatingSliderGraph({ id, disabled, rating, setRating }: R
 					minimumTrackTintColor={color}
 					thumbTintColor={color}
 					thumbStyle={disabled ? { opacity: 0.5 } : {}}
-					renderBelowThumbComponent={SliderTip}
+					renderBelowThumbComponent={getSliderTipFunction(id === "sargent")}
 					thumbTouchSize={{ width: 50, height: 80 }}
 					trackMarks={Array.from({ length: 6 }, (v, i) => i * 0.2)}
 					renderTrackMarkComponent={i => <View style={styles.trackMark}/>}
@@ -88,12 +88,20 @@ export default function RatingSliderGraph({ id, disabled, rating, setRating }: R
 	)
 }
 
-function SliderTip(value: number, index: number) {
-	return (
-		<View style={styles.tip}>
-			<Text style={styles.text}>{index.toFixed(2)}</Text>
-		</View>
-	)
+const standardEmojiMap = ["🤢", "😢", "😐", "😃", "😍", "😍"];
+const sargeEmojiMap = ["💩", "😡", "🖕", "🤢", "😐", "😐"];
+
+function getSliderTipFunction(isSarge: boolean) {
+	return (value: number, index: number) => {
+		const segment = Math.floor(index * 5);
+		const emoji = (isSarge ? sargeEmojiMap : standardEmojiMap)[segment];
+
+		return (
+			<View style={styles.tip}>
+				<Text style={[styles.text, styles.tipText]}>{emoji}</Text>
+			</View>
+		)
+	}
 }
 
 const styles = StyleSheet.create({
@@ -124,8 +132,11 @@ const styles = StyleSheet.create({
 		transform: [{ translateX: 8}],
 	},
 	tip: {
-		transform: [{ translateX: -30}],
+		transform: [{ translateX: -29}],
 		width: 60,
+	},
+	tipText: {
+		fontSize: 32,
 	},
 	text: {
 		fontSize: 24,
